@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IProduct } from './product.model';
 import { CartService } from '../cart/cart.service';
 import { ProductService } from './product.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'bot-catalog',
@@ -16,19 +17,31 @@ export class CatalogComponent {
   filter: string = '';
 
 
-  constructor(private cartSvc: CartService, private productSvc: ProductService){
-    
-  }
+  constructor(
+    private cartSvc: CartService, 
+    private productSvc: ProductService,
+    private router: Router,
+    private route: ActivatedRoute
+    ){ }
 
   ngOnInit(){
     this.productSvc.getProducts().subscribe(products =>{
       // products to the right of the assignment operator is the data coming from the server, and it's being assigned to the products property of the catalog.
       this.products = products;
+    });
+    // Uses the ActivatedRoute service and uses the filter property.  Grabs the params off of the route snapshot.  Setups up filter navigation from robot parts on home page
+    // this.filter = this.route.snapshot.params['filter'];
+
+    // Instead of using snapshot, we really want to setup a subscription that listens to changes to the route parameters.
+    this.route.queryParams.subscribe((params)=>{
+      // If a filter isn't provided, set the filter to an empty string
+      this.filter = params['filter'] ?? "";
     })
   }
 
   addToCart(product: IProduct){
     this.cartSvc.add(product);
+    this.router.navigate(['/cart']);
   }
 
   getDiscountedClasses(product: IProduct){
