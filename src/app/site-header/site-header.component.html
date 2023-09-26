@@ -8,8 +8,19 @@
       <a routerLink="/cart" routerLinkActive="active">Cart</a>
     </div>
   </div>
-  <div class="right">
-    <a href="">Sign In</a>
+  <!-- Only show if NOT a current user -->
+  <div class="right" *ngIf="!user">
+    <a routerLink="/sign-in" href="">Sign In</a>
     <a href="" class="cta">Register</a>
+  </div>
+  <!-- Only show if there is a currently logged in user -->
+  <div class="right" *ngIf="user">
+    <div>
+      <img src="/assets/images/profile.png" (click)="toggleSignOutMenu()" alt="profile" />
+      <!-- Only show this button if showSignOutMen is true -->
+      <div class="sign-out" *ngIf="showSignOutMenu">
+        <button (click)="signOut()">Sign Out</button>
+      </div>
+    </div>
   </div>
 </div>
